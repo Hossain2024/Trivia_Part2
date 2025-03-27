@@ -58,6 +58,8 @@ class TriviaViewController: UIViewController {
   }
   
   private func updateToNextQuestion(answer: String) {
+    let isCorrect = isCorrectAnswer(answer)
+      
     if isCorrectAnswer(answer) {
       numCorrectQuestions += 1
     }
@@ -66,12 +68,32 @@ class TriviaViewController: UIViewController {
       showFinalScore()
       return
     }
+      
+    showAnswerFeedback(isCorrect: isCorrect)
+    
     updateQuestion(withQuestionIndex: currQuestionIndex)
   }
   
   private func isCorrectAnswer(_ answer: String) -> Bool {
     return answer == questions[currQuestionIndex].correctAnswer
   }
+    
+    private func showAnswerFeedback(isCorrect: Bool){
+        let message = isCorrect ? "Correct!" : "Incorrect!"
+        let alertController = UIAlertController(title: message,
+                                                    message: nil,
+                                                    preferredStyle: .alert)
+                                                
+        let okAction = UIAlertAction(title: "OK", style: .default)
+        
+        alertController.addAction(okAction)
+        present(alertController, animated: true) {
+            // Dismiss the alert after a short delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                alertController.dismiss(animated: true, completion: nil)
+            }
+        }
+    }
   
   private func showFinalScore() {
     let alertController = UIAlertController(title: "Game over!",
@@ -89,6 +111,8 @@ class TriviaViewController: UIViewController {
     alertController.addAction(resetAction)
     present(alertController, animated: true, completion: nil)
   }
+    
+  
   
   private func addGradient() {
     let gradientLayer = CAGradientLayer()
@@ -99,6 +123,7 @@ class TriviaViewController: UIViewController {
     gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
     view.layer.insertSublayer(gradientLayer, at: 0)
   }
+    
   
   @IBAction func didTapAnswerButton0(_ sender: UIButton) {
     updateToNextQuestion(answer: sender.titleLabel?.text ?? "")
