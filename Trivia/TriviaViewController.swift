@@ -27,6 +27,11 @@ class TriviaViewController: UIViewController {
     addGradient()
     questionContainerView.layer.cornerRadius = 8.0
     // TODO: FETCH TRIVIA QUESTIONS HERE
+      TriviaQuestionService.fetchQuestion(amount: 10, category: 27, difficulty: "easy") { [weak self] questions in
+             self?.questions = questions
+             self?.updateQuestion(withQuestionIndex: 0)
+         }
+      
   }
   
   private func updateQuestion(withQuestionIndex questionIndex: Int) {
@@ -75,7 +80,11 @@ class TriviaViewController: UIViewController {
     let resetAction = UIAlertAction(title: "Restart", style: .default) { [unowned self] _ in
       currQuestionIndex = 0
       numCorrectQuestions = 0
-      updateQuestion(withQuestionIndex: currQuestionIndex)
+        TriviaQuestionService.fetchQuestion(amount: 10, category: 27, difficulty: "easy") { [weak self] questions in
+               self?.questions = questions
+               self?.updateQuestion(withQuestionIndex: 0)
+           }
+      
     }
     alertController.addAction(resetAction)
     present(alertController, animated: true, completion: nil)
